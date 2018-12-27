@@ -1,0 +1,48 @@
+﻿<UserControl x:Class="ContactManagement.Views.ContactsListView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ContactManagement.Views"
+             xmlns:vm="clr-namespace:ContactManagement.ViewModels"
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+             xmlns:conv="clr-namespace:ContactManagement.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="400">
+    <UserControl.DataContext>
+        <vm:ContactsListVM/>
+    </UserControl.DataContext>
+    <!-- Loads all contacts using interactivity library-->
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadAllContactsCommand}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+        <!-- lists all contacts in the database -->
+        <DataGrid Grid.Row="0" ItemsSource="{Binding Contacts, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False" IsReadOnly="True"
+                          SelectedValue="{Binding SelectedContact, UpdateSourceTrigger=PropertyChanged}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Type" Binding="{Binding Type}" Width="*"/>
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"/>
+                <DataGridTextColumn Header="Company" Binding="{Binding Company}" Width="*"/>
+                <DataGridTextColumn Header="Phone Number" Binding="{Binding Phone_Number, StringFormat={}{0:(###) ###-####}}" Width="*"/>
+                <DataGridTextColumn Header="Address" Binding="{Binding Address}" Width="*"/>
+            </DataGrid.Columns>
+
+        </DataGrid>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Top" 
+                    HorizontalAlignment="Center" Margin="0 10 0 0">
+            <ToggleButton x:Name="Btn_addContact" Content="Add New Contact" Width="120" Margin="10 0 0 0"
+                 Command="{Binding AddContactCommand, Mode=OneWay}" IsChecked="{Binding IsAddButtonPressed}"/>
+
+        </StackPanel>
+
+    </Grid>
+</UserControl>

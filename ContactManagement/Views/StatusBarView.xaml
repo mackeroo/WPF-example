@@ -1,0 +1,21 @@
+﻿<UserControl x:Class="ContactManagement.Views.StatusBarView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ContactManagement.Views"
+             mc:Ignorable="d" 
+             xmlns:vm="clr-namespace:ContactManagement.ViewModels"
+             d:DesignHeight="20" d:DesignWidth="300">
+    <UserControl.DataContext>
+        <vm:StatusBarVM/>
+    </UserControl.DataContext>
+    <Grid Background="LightGray">
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="150"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Column="1" Text="{Binding DisplayTime}" HorizontalAlignment="Right" Margin="0 0 10 0"/>
+    </Grid>
+</UserControl>

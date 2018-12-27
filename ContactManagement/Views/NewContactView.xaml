@@ -1,0 +1,139 @@
+﻿<UserControl x:Class="ContactManagement.Views.NewContactView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:conv="clr-namespace:ContactManagement.Converters"
+             xmlns:vm="clr-namespace:ContactManagement.ViewModels"
+             xmlns:v="clr-namespace:ContactManagement.Views"
+             xmlns:rules="clr-namespace:ContactManagement.ValidationRules"
+             mc:Ignorable="d" MaxWidth="300"
+             d:DesignHeight="500" d:DesignWidth="300">
+
+    <UserControl.DataContext>
+        <vm:NewContactVM/>
+    </UserControl.DataContext>
+
+    <UserControl.Resources>
+        <conv:BoolToVisConverter x:Key="boolToVisConverter"/>
+        <conv:CustomerToVisConverter x:Key="CustomerToVisConverter"/>
+        <conv:VendorToVisConverter x:Key="VendorToVisConverter"/>
+    </UserControl.Resources>
+    <Grid Visibility="{Binding IsViewEnabled, Converter={StaticResource boolToVisConverter}}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100" />
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <!-- contact type -->
+            <RowDefinition Height="40"/>
+            <!-- contact name -->
+            <RowDefinition Height="40"/>
+            <!-- contact company -->
+            <RowDefinition Height="Auto"/>
+            <!-- contact vendor code -->
+            <RowDefinition Height="40"/>
+            <!-- contact address -->
+            <RowDefinition Height="40"/>
+            <!-- contact phone -->
+            <RowDefinition Height="Auto"/>
+            <!-- contact notes -->
+            <RowDefinition Height="*"/>
+            <!-- contact buttons -->
+        </Grid.RowDefinitions>
+
+
+        <!--Contact Type / combobox-->
+        <TextBlock Text="Contact Type:"
+                       Grid.Row="0" Grid.Column="0" Margin="10,10,0,0"/>
+
+
+        <ComboBox Grid.Row="0" Grid.Column="1" Margin="10 10 10 10" x:Name="Cb_ContactType" Width="180"
+                  IsEnabled="{Binding IsNewContact}"
+                  SelectedValuePath="Content" SelectedValue="{Binding Type, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+            <ComboBoxItem Content="Customer"/>
+            <ComboBoxItem Content="Vendor"/>
+        </ComboBox>
+
+        <!--Name of contact / textbox-->
+        <TextBlock Text="Contact Name:" 
+                       Grid.Row="1" Grid.Column="0" Margin="10 10 0 0"/>
+
+        <TextBox Grid.Row="1" Grid.Column="1" Margin="10 10 10 10" Width="180"
+                 Text="{Binding Name, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+
+        <!--Company / textbox-->
+        <TextBlock Text="Company:" 
+                       Grid.Row="2" Grid.Column="0" Margin="10 10 0 0"/>
+
+        <TextBox Grid.Row="2" Grid.Column="1" Margin="10 10 10 10" Width="180">
+            <TextBox.Text>
+                <Binding Path="Company" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <rules:TextValidationRule/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
+
+
+        <!--Vendor Code / textbox-->
+        <TextBlock Text="Vendor Code:" 
+                       Grid.Row="3" Grid.Column="0" Margin="10 5 0 0"
+                   Visibility="{Binding ElementName=Cb_ContactType, Path=Text, Converter={StaticResource VendorToVisConverter}}"/>
+
+        <TextBox Grid.Row="3" Grid.Column="1" Margin="10 5 10 10" Width="100" HorizontalAlignment="Left"
+                 IsEnabled="{Binding CompanyNotExists}" 
+                 Visibility="{Binding ElementName=Cb_ContactType, Path=Text, Converter={StaticResource VendorToVisConverter}}">
+            <TextBox.Text>
+                <Binding Path="VendorCodeKey" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <rules:VendorCodeValidationRule/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
+
+        <!--Address / textbox-->
+        <TextBlock Text="Address:" 
+                       Grid.Row="4" Grid.Column="0" Margin="10 10 0 0"/>
+
+        <TextBox Grid.Row="4" Grid.Column="1" Margin="10 10 10 10" Width="180"
+                 Text="{Binding Address,  Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <!--Phone Number / textbox-->
+        <TextBlock Text="Phone Number:" 
+                       Grid.Row="5" Grid.Column="0" Margin="10 10 0 0"/>
+
+        <TextBox Grid.Row="5" Grid.Column="1" Margin="10 10 10 10" Width="180">
+            <TextBox.Text>
+                <Binding Path="Phone_Number" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <rules:PhoneValidationRule/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
+
+        <!--Notes / textbox-->
+        <StackPanel Grid.Row="6" Grid.ColumnSpan="2" 
+                    Visibility="{Binding ElementName=Cb_ContactType, Path=Text, Converter={StaticResource CustomerToVisConverter}}">
+            <TextBlock Text="Notes:" 
+                       Grid.Row="6" Grid.Column="0" Margin="10 0 0 0"  />
+
+            <TextBox Margin="10 0 10 0" Height="150" Width="280"
+                     Text="{Binding Notes, UpdateSourceTrigger=PropertyChanged}"/>
+        </StackPanel>
+
+
+        <!--Accept/Cancel Buttons-->
+        <StackPanel Orientation="Horizontal" Grid.Row="7" Grid.ColumnSpan="2" 
+                    HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0 10 0 0">
+            <Button Content="Accept" IsDefault="True" Width="70" Command="{Binding AcceptCreateCommand}"  />
+            <Button Content="Cancel" IsCancel="True" Width="70" Margin="20 0 0 0"
+                    Command="{Binding CancelCreateCommand}"/>
+        </StackPanel>
+
+    </Grid>
+</UserControl>
